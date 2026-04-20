@@ -9,6 +9,7 @@ import Cart from '../pages/Cart'
 import Checkout from '../pages/Checkout'
 import Success from '../pages/Success'
 import Cancel from '../pages/Cancel'
+import BookDetail from '../pages/BookDetail'
 
 function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/book/:id" element={<BookDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route
           path="/checkout"
