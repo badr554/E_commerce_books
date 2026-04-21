@@ -10,7 +10,12 @@ function formatPrice(value) {
 }
 
 function getBookImage(product) {
-  return product?.image || product?.cover_url || 'https://via.placeholder.com/720x960'
+  return (
+    product?.image ||
+    product?.image_url ||
+    product?.cover_url ||
+    'https://via.placeholder.com/720x960'
+  )
 }
 
 function getBookTitle(product) {
@@ -47,6 +52,8 @@ function BookDetail() {
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [actionError, setActionError] = useState(null)
+  const [adding, setAdding] = useState(false)
 
   useEffect(() => {
     if (!id) {
@@ -65,9 +72,28 @@ function BookDetail() {
       .finally(() => setLoading(false))
   }, [id])
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product) return
-    addToCart(product)
+    setActionError(null)
+    setAdding(true)
+
+    try {
+      await addToCart(product)
+      navigate('/cart')
+    } catch (err) {
+      const message = err.message || 'Could not add this book to your cart.'
+
+      if (/sign in|login/i.test(message)) {
+        navigate('/login', {
+          state: { message: 'Please sign in to add books to your cart.' },
+        })
+        return
+      }
+
+      setActionError(message)
+    } finally {
+      setAdding(false)
+    }
   }
 
   if (loading) {
@@ -133,12 +159,15 @@ function BookDetail() {
               type="button"
               className="book-detail-primary-button"
               onClick={handleAddToCart}
+              disabled={adding}
             >
               <ShoppingCart size={18} />
-              <span>Add to cart</span>
+              <span>{adding ? 'Adding...' : 'Add to cart'}</span>
             </button>
             <span className="book-detail-stock">{getStockLabel(product)}</span>
           </div>
+
+          {actionError && <p className="book-detail-description">{actionError}</p>}
         </div>
       </div>
     </section>

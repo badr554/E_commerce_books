@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { BookOpen } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { authService } from '../services/authService'
 import { sanitizeObject } from '../utils/sanitize'
 import { ROUTES } from '../utils/constants'
 import '../styles/Login&Register.css'
@@ -37,21 +38,76 @@ function GoogleIcon() {
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState(null)
+  const [message, setMessage] = useState(null)
   const [loading, setLoading] = useState(false)
-  const { user, login } = useAuth()
+  const { user, login, completeOAuthLoginFromUrl } = useAuth()
+  const location = useLocation()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (user) navigate(ROUTES.HOME)
   }, [navigate, user])
 
+  useEffect(() => {
+    setMessage(location.state?.message || null)
+  }, [location.state])
+
+  useEffect(() => {
+    const hasOAuthPayload = /token|plainTextToken|access_token|api_token|user=|error=|message=/.test(
+      `${location.search}${location.hash}`
+    )
+
+    if (!hasOAuthPayload) return
+
+    let isMounted = true
+
+    const completeOAuth = async () => {
+      setError(null)
+      setMessage(null)
+      setLoading(true)
+
+      try {
+        const authData = await completeOAuthLoginFromUrl(window.location.href)
+
+        if (!isMounted) return
+
+        if (authData?.authenticated) {
+          navigate(ROUTES.HOME, { replace: true })
+          return
+        }
+
+        if (authData?.message) {
+          setMessage(authData.message)
+          return
+        }
+
+        setError('Google login did not return a usable token.')
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Google login failed')
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    completeOAuth()
+
+    return () => {
+      isMounted = false
+    }
+  }, [location.hash, location.search, navigate])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    setMessage(null)
     setLoading(true)
     try {
       await login(sanitizeObject(form))
-      navigate(ROUTES.HOME)
+      navigate(ROUTES.HOME, { replace: true })
     } catch (err) {
       setError(err.message || 'Login failed')
     } finally {
@@ -60,7 +116,9 @@ function Login() {
   }
 
   const handleGoogleClick = () => {
-    setError('Google sign-in is not configured yet.')
+    setError(null)
+    setMessage(null)
+    window.location.assign(authService.getGoogleAuthUrl())
   }
 
   return (
@@ -86,6 +144,7 @@ function Login() {
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <h1 className="auth-title">Sign in</h1>
+          {message && <p className="auth-success">{message}</p>}
           {error && <p className="auth-error">{error}</p>}
 
           <label className="auth-label" htmlFor="login-email">

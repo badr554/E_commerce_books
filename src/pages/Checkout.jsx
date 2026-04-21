@@ -88,7 +88,13 @@ function Checkout() {
 
     setLoading(true)
     try {
-      const { url } = await paymentService.createCheckoutSession(cartItems)
+      const { url } = await paymentService.createCheckoutSession({
+        address: form.address,
+        city: form.city,
+        postal_code: form.postal,
+        country: form.country,
+        name: form.name,
+      })
       if (!url) {
         throw new Error('No checkout URL returned.')
       }

@@ -1,4 +1,4 @@
-export const APP_NAME = 'E-Commerce Store'
+export const APP_NAME = 'KotobOnline'
 
 export const ROUTES = {
   HOME: '/',

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { BookOpen } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { authService } from '../services/authService'
 import { sanitizeObject } from '../utils/sanitize'
 import { ROUTES } from '../utils/constants'
 import '../styles/Login&Register.css'
@@ -50,8 +51,21 @@ function Register() {
     setError(null)
     setLoading(true)
     try {
-      await register(sanitizeObject(form))
-      navigate(ROUTES.HOME)
+      const response = await register(sanitizeObject(form))
+
+      if (response?.authenticated) {
+        navigate(ROUTES.HOME, { replace: true })
+        return
+      }
+
+      navigate(ROUTES.LOGIN, {
+        replace: true,
+        state: {
+          message:
+            response?.message ||
+            'Account created successfully. Please sign in.',
+        },
+      })
     } catch (err) {
       setError(err.message || 'Registration failed')
     } finally {
@@ -60,7 +74,8 @@ function Register() {
   }
 
   const handleGoogleClick = () => {
-    setError('Google sign-in is not configured yet.')
+    setError(null)
+    window.location.assign(authService.getGoogleAuthUrl())
   }
 
   return (
@@ -131,7 +146,7 @@ function Register() {
             disabled={loading}
           />
           <p className="auth-helper">
-            Min. 8 characters. Checked against breach databases.
+            Min. 8 characters.
           </p>
 
           <button type="submit" className="auth-submit" disabled={loading}>

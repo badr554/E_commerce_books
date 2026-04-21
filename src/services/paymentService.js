@@ -1,8 +1,6 @@
 import api from './api'
 
 export const paymentService = {
-  createCheckoutSession: (cartItems) =>
-    api.post('/payment/create-checkout-session', { cartItems }),
-  verifyPayment: (sessionId) =>
-    api.get(`/payment/verify/${sessionId}`),
+  createCheckoutSession: (payload) =>
+    api.post('/Pay_with_Stripe_checkout', payload),
 }
