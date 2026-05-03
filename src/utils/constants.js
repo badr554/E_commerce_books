@@ -8,6 +8,7 @@ export const ROUTES = {
   CHECKOUT: '/checkout',
   SUCCESS: '/success',
   CANCEL: '/cancel',
+  ORDERS: '/orders',
 }
 
 export const LOCAL_STORAGE_KEYS = {

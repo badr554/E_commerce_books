@@ -61,7 +61,7 @@ function validateForm(form) {
 }
 
 function Checkout() {
-  const { cartItems, totalPrice } = useCart()
+  const { cartItems, totalPrice, clearCart } = useCart()
   const navigate = useNavigate()
   const [form, setForm] = useState(INITIAL_FORM)
   const [errors, setErrors] = useState({})
@@ -94,10 +94,16 @@ function Checkout() {
         postal_code: form.postal,
         country: form.country,
         name: form.name,
+        success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${window.location.origin}/cart`,
       })
       if (!url) {
         throw new Error('No checkout URL returned.')
       }
+      
+      // Clear the cart so it's empty when returning to the website
+      await clearCart()
+      
       window.location.href = url
     } catch (err) {
       setError(err.message || 'Payment failed. Please try again.')

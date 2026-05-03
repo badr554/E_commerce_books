@@ -1,0 +1,146 @@
+.orders-page {
+  padding: 10px 0 36px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.orders-header {
+  margin-bottom: 26px;
+}
+
+.orders-title {
+  color: #241d19;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.35rem, 4.2vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.orders-empty-page {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  padding: 18px 0 44px;
+}
+
+.orders-empty-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 34px 30px;
+  text-align: center;
+  background: #fffdfa;
+  border: 1px solid #e6dbcd;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(71, 51, 35, 0.05);
+}
+
+.orders-empty-title {
+  color: #241d19;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 18px;
+}
+
+.orders-empty-text {
+  color: #6f645d;
+  line-height: 1.7;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-card {
+  background: #fffdfa;
+  border: 1px solid #e6dbcd;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-id {
+  color: #6f645d;
+  font-size: 1rem;
+}
+
+.order-date {
+  color: #8c8177;
+  font-size: 0.85rem;
+}
+
+.order-status {
+  background: #f7e6e8;
+  color: #7f2532;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.order-items {
+  border-top: 1px solid #e8dfd4;
+  border-bottom: 1px solid #e8dfd4;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #3f3732;
+}
+
+.order-item-price {
+  font-weight: 600;
+  color: #241d19;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-total-label {
+  color: #241d19;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.order-total-value {
+  color: #241d19;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.orders-loading,
+.orders-error {
+  text-align: center;
+  padding: 40px;
+  color: #6f645d;
+}
+
+.orders-error {
+  color: #9d3f48;
+}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ShoppingCart } from 'lucide-react'
+import { ArrowLeft, Check, ShoppingCart } from 'lucide-react'
 import { useCart } from '../hooks/useCart'
 import { productService } from '../services/productService'
 import '../styles/BookDetail.css'
@@ -54,6 +54,7 @@ function BookDetail() {
   const [error, setError] = useState(null)
   const [actionError, setActionError] = useState(null)
   const [adding, setAdding] = useState(false)
+  const [added, setAdded] = useState(false)
 
   useEffect(() => {
     if (!id) {
@@ -79,7 +80,8 @@ function BookDetail() {
 
     try {
       await addToCart(product)
-      navigate('/cart')
+      setAdded(true)
+      setTimeout(() => setAdded(false), 2000)
     } catch (err) {
       const message = err.message || 'Could not add this book to your cart.'
 
@@ -159,10 +161,10 @@ function BookDetail() {
               type="button"
               className="book-detail-primary-button"
               onClick={handleAddToCart}
-              disabled={adding}
+              disabled={adding || added}
             >
-              <ShoppingCart size={18} />
-              <span>{adding ? 'Adding...' : 'Add to cart'}</span>
+              {added ? <Check size={18} /> : <ShoppingCart size={18} />}
+              <span>{adding ? 'Adding...' : added ? 'Added to cart!' : 'Add to cart'}</span>
             </button>
             <span className="book-detail-stock">{getStockLabel(product)}</span>
           </div>

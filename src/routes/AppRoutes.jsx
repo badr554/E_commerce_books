@@ -10,6 +10,7 @@ import Checkout from '../pages/Checkout'
 import Success from '../pages/Success'
 import Cancel from '../pages/Cancel'
 import BookDetail from '../pages/BookDetail'
+import Orders from '../pages/Orders'
 
 function AppRoutes() {
   return (
@@ -32,6 +33,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
             </ProtectedRoute>
           }
         />
