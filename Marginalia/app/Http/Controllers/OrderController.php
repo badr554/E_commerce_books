@@ -24,15 +24,14 @@ class OrderController extends Controller
             ->get()
             ->map(function ($order) {
 
-                //GET items for each order and include product details (name and price) for better display in the frontend
-                $order->items = \App\Models\CartItem::where('user_id', $order->user_id)
-                    ->with('product:id,name,price') // GET only necessary fields from products for better performance
+                // GET items for each order from the permanent OrderItem table [cite: 71]
+                $order->items = \App\Models\OrderItem::where('order_id', $order->id)
                     ->get()
                     ->map(function ($item) {
                         return [
-                            'product_name' => $item->product->name,
+                            'product_name' => $item->product_name,
                             'quantity' => $item->quantity,
-                            'price' => $item->product->price / 100 // TRANSFORM price from cents to dollars for better readability in the frontend
+                            'price' => $item->price / 100 // TRANSFORM price from cents to dollars
                         ];
                     });
 

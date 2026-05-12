@@ -48,9 +48,21 @@ class CheckoutController extends Controller
                 'price' => $item->product->stripe_price_id,
                 'quantity' => $item->quantity,
             ];
+
+            // SAVE items to the permanent OrderItem table for history [cite: 71]
+            \App\Models\OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'product_name' => $item->product->name,
+                'price' => $item->product->price,
+                'quantity' => $item->quantity,
+            ]);
         }
 
         $order->update(['total_amount' => $totalAmount]);
+
+        // CLEAR the user's cart after creating the order [cite: 71]
+        CartItem::where('user_id', $user->id)->delete();
 
         // Use the Frontend URL from the .env file
         $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
@@ -60,9 +72,7 @@ class CheckoutController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            // EXACT SUCCESS URL: http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}
             'success_url' => $frontendUrl . '/success?session_id={CHECKOUT_SESSION_ID}',
-            // EXACT CANCEL URL: http://localhost:5173/cart
             'cancel_url' => $frontendUrl . '/cart',
             'metadata' => [
                 'order_id' => $order->id,
