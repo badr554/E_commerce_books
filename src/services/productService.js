@@ -44,7 +44,8 @@ function normalizeProducts(payload) {
 }
 
 export const productService = {
-  getAll: async () => normalizeProducts(await api.get('/get_products')),
+  getAll: async () =>
+    normalizeProducts(await api.get('/get_products', { withCredentials: false })),
   getById: async (id) => {
     const products = await productService.getAll()
     const product = products.find((item) => String(item.id) === String(id))

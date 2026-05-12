@@ -3,7 +3,6 @@ import { BookOpen } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { authService } from '../services/authService'
-import { sanitizeObject } from '../utils/sanitize'
 import { ROUTES } from '../utils/constants'
 import '../styles/Login&Register.css'
 
@@ -106,7 +105,7 @@ function Login() {
     setMessage(null)
     setLoading(true)
     try {
-      await login(sanitizeObject(form))
+      await login(form)
       navigate(ROUTES.HOME, { replace: true })
     } catch (err) {
       setError(err.message || 'Login failed')
@@ -142,7 +141,7 @@ function Login() {
           </Link>
         </div>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <h1 className="auth-title">Sign in</h1>
           {message && <p className="auth-success">{message}</p>}
           {error && <p className="auth-error">{error}</p>}

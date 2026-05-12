@@ -82,7 +82,11 @@ function Orders() {
             : order.id;
 
           return (
-            <div key={order.id} className="order-card">
+            <Link
+              key={order.id}
+              to={ROUTES.ORDER_DETAIL(order.id)}
+              className="order-card order-card-link"
+            >
               <div className="order-header">
                 <div className="order-info">
                   <div className="order-id">Order #{displayId}</div>
@@ -104,7 +108,7 @@ function Orders() {
                 <span className="order-total-label">Total</span>
                 <span className="order-total-value">{formatPrice(order.display_total)}</span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

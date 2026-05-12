@@ -10,33 +10,28 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.USER)
-    const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN)
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN)
 
     if (stored) {
       try {
         setUser(JSON.parse(stored))
+        setLoading(false)
+        return
       } catch {
         localStorage.removeItem(LOCAL_STORAGE_KEYS.USER)
       }
     }
 
-    if (!stored && token) {
-      authService
-        .getProfile()
-        .then((profile) => {
-          setUser(profile)
-          localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(profile))
-        })
-        .catch(() => {
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.USER)
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN)
-        })
-        .finally(() => setLoading(false))
-
-      return
-    }
-
-    setLoading(false)
+    authService
+      .getProfile()
+      .then((profile) => {
+        setUser(profile)
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(profile))
+      })
+      .catch(() => {
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.USER)
+      })
+      .finally(() => setLoading(false))
   }, [])
 
   const persistSession = (authData) => {
@@ -47,7 +42,6 @@ export function AuthProvider({ children }) {
       LOCAL_STORAGE_KEYS.USER,
       JSON.stringify(authData.user)
     )
-    localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, authData.token)
 
     return authData
   }
@@ -56,7 +50,7 @@ export function AuthProvider({ children }) {
     const data = await authService.login(credentials)
 
     if (!data.authenticated) {
-      throw new Error(data.message || 'Login response is missing token or user')
+      throw new Error(data.message || 'Login response is missing user')
     }
 
     return persistSession(data)
@@ -66,7 +60,6 @@ export function AuthProvider({ children }) {
     await authService.logout()
     setUser(null)
     localStorage.removeItem(LOCAL_STORAGE_KEYS.USER)
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN)
   }
 
   const register = async (userData) => {

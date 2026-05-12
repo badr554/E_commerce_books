@@ -9,6 +9,7 @@ export const ROUTES = {
   SUCCESS: '/success',
   CANCEL: '/cancel',
   ORDERS: '/orders',
+  ORDER_DETAIL: (id = ':id') => `/orders/${id}`,
 }
 
 export const LOCAL_STORAGE_KEYS = {

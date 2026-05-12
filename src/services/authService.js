@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LOCAL_STORAGE_KEYS } from '../utils/constants'
+import { attachCsrfToken } from '../utils/security'
 
 const AUTH_API_BASE_URL =
   import.meta.env.VITE_AUTH_API_URL ||
@@ -7,6 +7,7 @@ const AUTH_API_BASE_URL =
 
 const authApi = axios.create({
   baseURL: AUTH_API_BASE_URL,
+  withCredentials: true,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -15,13 +16,7 @@ const authApi = axios.create({
 })
 
 authApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN)
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-
-  return config
+  return attachCsrfToken(config)
 })
 
 function normalizeError(error) {
@@ -84,7 +79,7 @@ function normalizeAuthResponse(payload = {}) {
     message,
     token,
     user,
-    authenticated: Boolean(token && user),
+    authenticated: Boolean(payload?.authenticated || user),
   }
 }
 

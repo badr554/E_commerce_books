@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import BookCard from '../components/BookCard'
 import { productService } from '../services/productService'
+import { sanitizeInput } from '../utils/sanitize'
 import '../styles/Home.css'
 
 function normalizeProducts(payload) {
@@ -31,7 +32,8 @@ function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchParams] = useSearchParams()
-  const query = (searchParams.get('q') || '').trim().slice(0, 100)
+  const rawQuery = (searchParams.get('q') || '').trim().slice(0, 100)
+  const query = sanitizeInput(rawQuery)
 
   useEffect(() => {
     setLoading(true)
@@ -48,11 +50,11 @@ function Home() {
   }, [])
 
   const filteredProducts = useMemo(() => {
-    if (!query) return products
+    if (!rawQuery) return products
 
-    const normalizedQuery = query.toLowerCase()
+    const normalizedQuery = rawQuery.toLowerCase()
     return products.filter((product) => matchesQuery(product, normalizedQuery))
-  }, [products, query])
+  }, [products, rawQuery])
 
   return (
     <div className="home-page">

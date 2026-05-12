@@ -11,6 +11,7 @@ import {
 import { useCart } from '../hooks/useCart'
 import { paymentService } from '../services/paymentService'
 import { ROUTES } from '../utils/constants'
+import { sanitizeObject } from '../utils/sanitize'
 import '../styles/Checkout.css'
 
 const SHIPPING_FIELDS = [
@@ -88,12 +89,13 @@ function Checkout() {
 
     setLoading(true)
     try {
+      const safeForm = sanitizeObject(form)
       const { url } = await paymentService.createCheckoutSession({
-        address: form.address,
-        city: form.city,
-        postal_code: form.postal,
-        country: form.country,
-        name: form.name,
+        address: safeForm.address,
+        city: safeForm.city,
+        postal_code: safeForm.postal,
+        country: safeForm.country,
+        name: safeForm.name,
         success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${window.location.origin}/cart`,
       })

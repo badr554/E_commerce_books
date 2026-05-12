@@ -15,7 +15,8 @@ const Header = () => {
 
   const onSearch = (e) => {
     e.preventDefault();
-    if (q.trim()) navigate(`/?q=${q}`);
+    const query = q.trim();
+    if (query) navigate(`/?q=${encodeURIComponent(query)}`);
   };
 
   // Close dropdown when clicking outside

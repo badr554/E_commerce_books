@@ -230,6 +230,17 @@
   color: #8a3d45;
 }
 
+.home-security-alert {
+  margin: -14px 0 26px;
+  padding: 14px 16px;
+  border: 1px solid #efcdc7;
+  border-radius: 8px;
+  background: #f7e6e8;
+  color: #7f2532;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 @keyframes homeShimmer {
   from {
     background-position: 200% 0;

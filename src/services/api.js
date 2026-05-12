@@ -1,10 +1,11 @@
 import axios from 'axios'
-import { LOCAL_STORAGE_KEYS } from '../utils/constants'
+import { attachCsrfToken } from '../utils/security'
 
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
     'https://cary-nontumorous-unimpedingly.ngrok-free.dev/api',
+  withCredentials: true,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -13,9 +14,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN)
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
+  return attachCsrfToken(config)
 })
 
 api.interceptors.response.use(

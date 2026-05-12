@@ -11,6 +11,8 @@ import Success from '../pages/Success'
 import Cancel from '../pages/Cancel'
 import BookDetail from '../pages/BookDetail'
 import Orders from '../pages/Orders'
+import OrderDetail from '../pages/OrderDetail'
+import XssLab from '../pages/XssLab'
 
 function AppRoutes() {
   return (
@@ -20,6 +22,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/book/:id" element={<BookDetail />} />
+        <Route path="/xss-lab" element={<XssLab />} />
         <Route
           path="/cart"
           element={
@@ -41,6 +44,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetail />
             </ProtectedRoute>
           }
         />
