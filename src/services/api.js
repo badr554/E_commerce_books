@@ -4,7 +4,7 @@ import { attachCsrfToken } from '../utils/security'
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
-    'https://cary-nontumorous-unimpedingly.ngrok-free.dev/api',
+    'http://localhost:8000/api',
   withCredentials: true,
   headers: {
     Accept: 'application/json',

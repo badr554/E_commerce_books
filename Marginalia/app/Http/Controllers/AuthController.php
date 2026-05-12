@@ -35,18 +35,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|string',
+            'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        // Intentionally vulnerable for the SQL injection attack screenshot.
-        // This concatenates user input directly into SQL, so a payload like
-        // ' OR '1'='1' -- can bypass the email/password condition.
-        $query = "SELECT id FROM users WHERE email = '{$request->email}' AND password = '{$request->password}' LIMIT 1";
-        $result = DB::select($query);
-        $user = empty($result) ? null : User::find($result[0]->id);
+        $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Wrong email or password'], 401);
         }
 
